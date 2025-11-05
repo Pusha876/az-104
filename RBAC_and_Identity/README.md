@@ -30,7 +30,7 @@ Message: The request did not have a subscription or a valid tenant level resourc
 - Subscription is active and accessible
 - Other Azure operations work normally
 - Role assignment commands consistently fail with MissingSubscription error
-- Issue occurs at both subscription and resource group levels
+- Issue occurs at subscription, resource group, and management group levels
 
 **Root Cause:**
 This appears to be a known issue with certain Azure CLI versions or specific tenant/subscription configurations where the role assignment commands don't properly inherit the subscription context.
@@ -115,6 +115,29 @@ az rest --method PUT \
   --headers "Content-Type=application/json"
 ```
 
+**Management Group Level Assignment:**
+```bash
+# Variables
+MANAGEMENT_GROUP="Dev-MG-CLI"
+USER_EMAIL="labuser2@djpusha876gmail.onmicrosoft.com"
+ROLE_NAME="Reader"
+
+# Get user principal ID
+PRINCIPAL_ID=$(az ad user show --id $USER_EMAIL --query id --output tsv)
+
+# Get role definition ID
+ROLE_ID=$(az role definition list --name "$ROLE_NAME" --query "[0].name" --output tsv)
+
+# Generate assignment ID
+ASSIGNMENT_ID=$(python -c "import uuid; print(uuid.uuid4())")
+
+# Create role assignment at management group level
+az rest --method PUT \
+  --uri "https://management.azure.com/providers/Microsoft.Management/managementGroups/$MANAGEMENT_GROUP/providers/Microsoft.Authorization/roleAssignments/$ASSIGNMENT_ID?api-version=2022-04-01" \
+  --body "{\"properties\":{\"roleDefinitionId\":\"/providers/Microsoft.Authorization/roleDefinitions/$ROLE_ID\",\"principalId\":\"$PRINCIPAL_ID\"}}" \
+  --headers "Content-Type=application/json"
+```
+
 **Multiple Role Assignments (Each role requires a separate command):**
 ```bash
 # Variables
@@ -157,6 +180,10 @@ az rest --method GET \
 # List role assignments for the user at resource group level
 az rest --method GET \
   --uri "https://management.azure.com/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&\$filter=principalId eq '<principal-id>'"
+
+# List role assignments for the user at management group level
+az rest --method GET \
+  --uri "https://management.azure.com/providers/Microsoft.Management/managementGroups/<management-group>/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&\$filter=principalId eq '<principal-id>'"
 ```
 
 **Alternative Solutions to Try First:**
