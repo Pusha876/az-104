@@ -2,11 +2,23 @@
 
 This lab demonstrates how to create and manage Azure resource locks to prevent accidental deletion or modification of critical resources.
 
+## 🔧 Configuration Setup
+
+**IMPORTANT**: Before running any scripts, you must set up your configuration:
+
+1. Navigate to the `RBAC_and_Identity` directory
+2. Copy the configuration template:
+   ```bash
+   cp config.template.sh config.sh
+   ```
+3. Edit `config.sh` with your Azure subscription ID and other values
+4. The `config.sh` file is automatically ignored by git for security
+
 ## Scripts Overview
 
 ### 1. `resource-lock-lab.sh` (Basic)
 - Creates resource group and storage account
-- Basic script with the variables you requested
+- Basic script that loads configuration from `../../config.sh`
 
 ### 2. `resource-lock-lab-advanced.sh` (Recommended)
 - Creates resource group and storage account
@@ -14,17 +26,20 @@ This lab demonstrates how to create and manage Azure resource locks to prevent a
 - Applies CanNotDelete lock to storage account
 - Includes error checking and colored output
 - Lists all applied locks
+- Loads configuration from `../../config.sh`
 
 ### 3. `cleanup-resource-lock-lab.sh`
 - Removes all applied locks
 - Safely deletes the resource group and resources
 - Includes confirmation prompt
+- Loads configuration from `../../config.sh`
 
 ## Prerequisites
 
 - Azure CLI installed and configured
 - Valid Azure subscription
 - Appropriate permissions to create resources and locks
+- Configuration file setup (see Configuration Setup above)
 
 ## Usage
 

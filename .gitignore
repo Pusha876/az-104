@@ -1,0 +1,74 @@
+# Azure sensitive information
+config.sh
+*.config.sh
+.env
+.env.local
+.env.production
+.env.staging
+
+# Subscription IDs and sensitive config files
+subscription-config.sh
+azure-config.sh
+*-config.sh
+
+# Azure CLI and PowerShell credentials
+.azure/
+*.publishsettings
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+logs/
+temp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and editor files
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Azure Functions local development
+local.settings.json
+bin/
+obj/
+
+# Node.js (if used in any Azure projects)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (if used in any Azure projects)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+.env/
+
+# Terraform (if used for IaC)
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+!example.tfvars
+
+# ARM Templates sensitive files
+azuredeploy.parameters.json
+!azuredeploy.parameters.example.json

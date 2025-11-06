@@ -3,9 +3,18 @@
 # Azure Resource Lock Lab Cleanup Script
 # This script removes locks and cleans up resources created by the lock lab
 
-# Variables — replace with your values (should match the creation script)
-SUB_ID="00000000-0000-0000-0000-000000000000"
-RG="rg-lock-lab"
+# Load configuration from config file
+CONFIG_FILE="../../config.sh"
+if [ -f "$CONFIG_FILE" ]; then
+    source "$CONFIG_FILE"
+else
+    echo "❌ Configuration file not found: $CONFIG_FILE"
+    echo "Please copy config.template.sh to config.sh and update with your values"
+    exit 1
+fi
+
+# Variables — using config file values (should match the creation script)
+RG="${LOCK_LAB_RG:-rg-lock-lab}"
 
 # Colors for output
 RED='\033[0;31m'

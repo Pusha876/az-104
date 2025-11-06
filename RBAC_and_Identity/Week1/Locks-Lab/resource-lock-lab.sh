@@ -3,11 +3,20 @@
 # Azure Resource Lock Lab - Basic Version
 # This script demonstrates basic resource lock functionality
 
-# Variables (modify these as needed)
-SUB_ID="fdb4cfb7-d1ff-4de8-866a-b6c3ae961a7b"
-RG="ResourceLockLabRG"
-LOC="East US"
-SA="resourcelocksa$(date +%s)"
+# Load configuration from config file
+CONFIG_FILE="../../config.sh"
+if [ -f "$CONFIG_FILE" ]; then
+    source "$CONFIG_FILE"
+else
+    echo "❌ Configuration file not found: $CONFIG_FILE"
+    echo "Please copy config.template.sh to config.sh and update with your values"
+    exit 1
+fi
+
+# Variables (using config file values)
+RG="${LOCK_LAB_RG:-ResourceLockLabRG}"
+LOC="${AZURE_REGION:-East US}"
+SA="${STORAGE_PREFIX:-resourcelocksa}$(date +%s)"
 
 echo "Starting Azure Resource Lock Lab..."
 

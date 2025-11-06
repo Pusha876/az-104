@@ -3,11 +3,20 @@
 # Azure Resource Lock Lab Script - Advanced Version
 # This script demonstrates creating resources and applying different types of locks
 
-# Variables — replace with your values
-SUB_ID="00000000-0000-0000-0000-000000000000"
-RG="rg-lock-lab"
-LOC="eastus"
-SA="locklabstorage$(date +%s)"   # makes name unique
+# Load configuration from config file
+CONFIG_FILE="../../config.sh"
+if [ -f "$CONFIG_FILE" ]; then
+    source "$CONFIG_FILE"
+else
+    echo "❌ Configuration file not found: $CONFIG_FILE"
+    echo "Please copy config.template.sh to config.sh and update with your values"
+    exit 1
+fi
+
+# Variables — using config file values
+RG="${LOCK_LAB_RG:-rg-lock-lab}"
+LOC="${AZURE_REGION:-eastus}"
+SA="${STORAGE_PREFIX:-locklabstorage}$(date +%s)"   # makes name unique
 
 # Colors for output
 RED='\033[0;31m'
