@@ -10,6 +10,8 @@ config.sh
 subscription-config.sh
 azure-config.sh
 *-config.sh
+Network_Security_Control/config
+*/config
 
 # Azure CLI and PowerShell credentials
 .azure/

@@ -1,0 +1,10 @@
+# vars
+SUBSCRIPTION_ID="SUBSCRIPTION_ID"
+LOC="eastus"
+RG1="rg-net-a"
+RG2="rg-net-b"
+VNET1="vnet-a"
+VNET2="vnet-b"
+VNET1_SUB1="subnet-a1"
+VNET1_SUB2="subnet-a2"
+VNET2_SUB1="subnet-b1"
