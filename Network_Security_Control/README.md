@@ -23,11 +23,11 @@ This lab focuses on implementing and managing Azure network security controls, i
 This lab creates the following network topology:
 
 ### Virtual Networks
-- **vnet-a** (10.1.0.0/16) in Resource Group `rg-net-a`
-  - subnet-a1 (10.1.1.0/24)
-  - subnet-a2 (10.1.2.0/24)
-- **vnet-b** (10.2.0.0/16) in Resource Group `rg-net-b`
-  - subnet-b1 (10.2.1.0/24)
+- **vnet-a** (10.0.0.0/16) in Resource Group `rg-net-a`
+  - subnet-a1 (10.0.1.0/24)
+  - subnet-a2 (10.0.2.0/24)
+- **vnet-b** (10.1.0.0/16) in Resource Group `rg-net-b`
+  - subnet-b1 (10.1.1.0/24)
 
 ### Network Security Scenarios
 This lab covers:
@@ -67,6 +67,88 @@ This lab covers:
 2. Review the network topology and addressing scheme
 3. Run lab scripts in the recommended order
 4. Monitor resources and costs during lab exercises
+
+## 📚 Lab Walkthrough
+
+Follow these steps to work through the Network Security Control lab properly:
+
+### Part A — Create Resource Groups & Virtual Networks
+
+#### Option 1: Azure Portal (Quick Setup)
+
+**Step 1: Create Resource Groups**
+1. Navigate to Azure Portal → Resource Groups
+2. Create first resource group:
+   - Name: `rg-net-a`
+   - Region: `East US`
+3. Create second resource group:
+   - Name: `rg-net-b`
+   - Region: `East US`
+
+**Step 2: Create Virtual Network A**
+In resource group `rg-net-a`, create VNet `vnet-a`:
+- **Name**: `vnet-a`
+- **Address range**: `10.0.0.0/16`
+- **Subnets**:
+  - **subnet-a1**: `10.0.1.0/24`
+  - **subnet-a2**: `10.0.2.0/24`
+
+**Step 3: Create Virtual Network B**
+In resource group `rg-net-b`, create VNet `vnet-b` (for peering later):
+- **Name**: `vnet-b`
+- **Address range**: `10.1.0.0/16`
+- **Subnets**:
+  - **subnet-b1**: `10.1.1.0/24`
+
+#### Option 2: Azure CLI (Automated)
+
+```bash
+# Load configuration
+source config
+
+# Create resource groups
+az group create --name $RG1 --location $LOC
+az group create --name $RG2 --location $LOC
+
+# Create VNet A with two subnets
+az network vnet create \
+  --resource-group $RG1 \
+  --name $VNET1 \
+  --address-prefixes 10.0.0.0/16 \
+  --subnet-name $VNET1_SUB1 \
+  --subnet-prefixes 10.0.1.0/24
+
+az network vnet subnet create \
+  --resource-group $RG1 \
+  --vnet-name $VNET1 \
+  --name $VNET1_SUB2 \
+  --address-prefixes 10.0.2.0/24
+
+# Create VNet B with one subnet
+az network vnet create \
+  --resource-group $RG2 \
+  --name $VNET2 \
+  --address-prefixes 10.1.0.0/16 \
+  --subnet-name $VNET2_SUB1 \
+  --subnet-prefixes 10.1.1.0/24
+```
+
+**Verification Commands:**
+```bash
+# List all resource groups
+az group list --query "[?starts_with(name, 'rg-net')].{Name:name, Location:location}" --output table
+
+# Verify VNet A
+az network vnet show --resource-group $RG1 --name $VNET1 --query "{Name:name, AddressSpace:addressSpace.addressPrefixes}" --output table
+az network vnet subnet list --resource-group $RG1 --vnet-name $VNET1 --query "[].{Name:name, AddressPrefix:addressPrefix}" --output table
+
+# Verify VNet B
+az network vnet show --resource-group $RG2 --name $VNET2 --query "{Name:name, AddressSpace:addressSpace.addressPrefixes}" --output table
+az network vnet subnet list --resource-group $RG2 --vnet-name $VNET2 --query "[].{Name:name, AddressPrefix:addressPrefix}" --output table
+```
+
+### Part B — Network Security Groups (Coming Next)
+*Additional lab steps will be added as we progress through the exercises*
 
 ## 🧹 Cleanup
 
