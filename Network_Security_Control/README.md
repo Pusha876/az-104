@@ -147,8 +147,74 @@ az network vnet show --resource-group $RG2 --name $VNET2 --query "{Name:name, Ad
 az network vnet subnet list --resource-group $RG2 --vnet-name $VNET2 --query "[].{Name:name, AddressPrefix:addressPrefix}" --output table
 ```
 
-### Part B — Network Security Groups (Coming Next)
-*Additional lab steps will be added as we progress through the exercises*
+### Part B — Network Security Groups (NSGs)
+
+Configure Network Security Groups to control traffic between VMs and subnets.
+
+#### Prerequisites for Part B
+- Part A completed (resource groups, VNets, and VMs created)
+- Both VMs (vm-net-a and vm-net-b) are running
+
+#### NSG Configuration Steps
+
+**Step 1: Create Network Security Groups**
+Create separate NSGs for each subnet to demonstrate granular control:
+- **nsg-subnet-a1** - For subnet-a1 (where vm-net-a resides)
+- **nsg-subnet-a2** - For subnet-a2 (where vm-net-b resides)
+
+**Step 2: Configure Security Rules**
+- **Allow SSH** from Internet to subnet-a1 (management access)
+- **Allow ICMP** within VNet (for ping testing)
+- **Block HTTP** from subnet-a1 to subnet-a2 (demonstration rule)
+- **Allow SSH** between subnets (for inter-VM management)
+
+**Step 3: Associate NSGs with Subnets**
+Link each NSG to its respective subnet to enforce the rules.
+
+#### Option 1: Automated Script
+```bash
+# Run the automated Part B script
+./part-b-create-nsgs.sh
+```
+
+#### Option 2: Manual Azure CLI Commands
+```bash
+# Load configuration
+source config
+
+# Create NSGs
+az network nsg create --resource-group $RG1 --name nsg-subnet-a1 --location $LOC
+az network nsg create --resource-group $RG1 --name nsg-subnet-a2 --location $LOC
+
+# Create security rules (examples)
+az network nsg rule create \
+  --resource-group $RG1 \
+  --nsg-name nsg-subnet-a1 \
+  --name "Allow-SSH-Internet" \
+  --priority 1000 \
+  --source-address-prefixes Internet \
+  --destination-port-ranges 22 \
+  --access Allow \
+  --protocol Tcp
+
+# Associate NSGs with subnets
+az network vnet subnet update \
+  --resource-group $RG1 \
+  --vnet-name $VNET1 \
+  --name $VNET1_SUB1 \
+  --network-security-group nsg-subnet-a1
+```
+
+#### Testing Network Security
+After Part B completion, test the following connectivity scenarios:
+
+1. **SSH to VM1** (should work - SSH allowed from Internet)
+2. **Ping between VMs** (should work - ICMP allowed within VNet)  
+3. **SSH from VM1 to VM2** (should work - SSH allowed between subnets)
+4. **HTTP from VM1 to VM2** (should be blocked - HTTP denied by custom rule)
+
+### Part C — VNet Peering (Coming Next)
+*Advanced networking scenarios with multiple VNets*
 
 ## 🧹 Cleanup
 
