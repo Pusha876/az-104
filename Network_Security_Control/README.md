@@ -213,8 +213,104 @@ After Part B completion, test the following connectivity scenarios:
 3. **SSH from VM1 to VM2** (should work - SSH allowed between subnets)
 4. **HTTP from VM1 to VM2** (should be blocked - HTTP denied by custom rule)
 
-### Part C — VNet Peering (Coming Next)
-*Advanced networking scenarios with multiple VNets*
+### Part C — VNet Peering 
+
+Implement Virtual Network Peering to enable communication between separate VNets.
+
+#### Prerequisites for Part C
+- Parts A and B completed (VNet A with VMs and NSGs configured)
+- Understanding of VNet address spaces and routing
+
+#### VNet Peering Architecture
+
+**Before Part C:**
+- VNet A (10.0.0.0/16) with 2 VMs in different subnets
+- VNet B exists but may need reconfiguration
+
+**After Part C:**
+- VNet A (10.0.0.0/16) ←→ VNet B (10.1.0.0/16)
+- Bidirectional peering connection
+- VM3 deployed in VNet B for cross-VNet testing
+- NSG rules updated for inter-VNet communication
+
+#### Implementation Steps
+
+**Step 1: VNet B Configuration**
+- Ensure VNet B has correct address space (10.1.0.0/16)
+- Create subnet-b1 (10.1.1.0/24)
+- Deploy VM3 for testing cross-VNet connectivity
+
+**Step 2: Network Security Groups**
+- Create NSG for VNet B subnet
+- Configure rules to allow communication from VNet A
+- Maintain security while enabling cross-VNet traffic
+
+**Step 3: VNet Peering Setup**
+- Create bidirectional peering: VNet A ←→ VNet B
+- Configure peering settings (allow VNet access, forwarded traffic)
+- Verify peering state is "Connected"
+
+#### Option 1: Automated Script
+```bash
+# Run the automated Part C script
+./part-c-vnet-peering.sh
+```
+
+#### Option 2: Manual Azure CLI Commands
+```bash
+# Load configuration
+source config
+
+# Create VNet peering from A to B
+az network vnet peering create \
+  --name peer-vnet-a-to-vnet-b \
+  --resource-group $RG1 \
+  --vnet-name $VNET1 \
+  --remote-vnet $VNET2 \
+  --allow-vnet-access \
+  --allow-forwarded-traffic
+
+# Create VNet peering from B to A
+az network vnet peering create \
+  --name peer-vnet-b-to-vnet-a \
+  --resource-group $RG2 \
+  --vnet-name $VNET2 \
+  --remote-vnet "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RG1/providers/Microsoft.Network/virtualNetworks/$VNET1" \
+  --allow-vnet-access \
+  --allow-forwarded-traffic
+```
+
+#### Testing Cross-VNet Connectivity
+
+After Part C completion, test these scenarios:
+
+1. **Cross-VNet Ping** - VM1/VM2 → VM3 (should work with peering)
+2. **Cross-VNet SSH** - SSH from VNet A VMs to VNet B VM using private IPs
+3. **Route Verification** - Check effective routes show peered network paths
+4. **NSG Rule Testing** - Verify traffic flows through configured security rules
+
+#### Network Topology After Part C
+```
+┌─────────────────┐    Peering    ┌─────────────────┐
+│ VNet A          │ ←─────────→   │ VNet B          │
+│ 10.0.0.0/16     │               │ 10.1.0.0/16     │
+│                 │               │                 │
+│ ┌─────────────┐ │               │ ┌─────────────┐ │
+│ │ subnet-a1   │ │               │ │ subnet-b1   │ │
+│ │ 10.0.1.0/24 │ │               │ │ 10.1.1.0/24 │ │
+│ │   vm-net-a  │ │               │ │   vm-net-c  │ │
+│ └─────────────┘ │               │ └─────────────┘ │
+│                 │               │                 │
+│ ┌─────────────┐ │               │                 │
+│ │ subnet-a2   │ │               │                 │
+│ │ 10.0.2.0/24 │ │               │                 │
+│ │   vm-net-b  │ │               │                 │
+│ └─────────────┘ │               │                 │
+└─────────────────┘               └─────────────────┘
+```
+
+### Part D — Advanced Scenarios (Future)
+*Traffic analysis, custom routing, and network monitoring*
 
 ## 🧹 Cleanup
 
