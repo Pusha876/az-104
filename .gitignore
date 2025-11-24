@@ -12,6 +12,8 @@ azure-config.sh
 *-config.sh
 Network_Security_Control/config
 */config
+variable
+*/variable
 
 # Azure CLI and PowerShell credentials
 .azure/
