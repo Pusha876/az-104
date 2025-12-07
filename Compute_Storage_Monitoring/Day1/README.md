@@ -1,6 +1,6 @@
 # Day 1: Virtual Machines & Compute Essentials
 
-## í³ Lab Structure
+## ï¿½ï¿½ï¿½ Lab Structure
 
 ```
 Day1/
@@ -9,7 +9,7 @@ Day1/
     â””â”€â”€ variable          # Configuration variables (gitignored)
 ```
 
-## í¾¯ Learning Objectives
+## ï¿½ï¿½ï¿½ Learning Objectives
 
 By the end of Day 1, you will be able to:
 
@@ -19,7 +19,7 @@ By the end of Day 1, you will be able to:
 - Implement SSH key authentication
 - Understand VM SKUs and sizing decisions
 
-## í·ª Hands-On Lab: Secure VM with Managed Identity
+## ï¿½ï¿½ï¿½ Hands-On Lab: Secure VM with Managed Identity
 
 ### Lab Overview
 Deploy a Linux VM with:
@@ -29,7 +29,7 @@ Deploy a Linux VM with:
 - âœ… Standard static public IP
 - âœ… Ubuntu LTS with minimal B1s size
 
-## íº€ Quick Start
+## ï¿½ï¿½ï¿½ Quick Start
 
 ### Prerequisites
 ```bash
@@ -60,7 +60,7 @@ ssh -i ~/.ssh/id_rsa azureuser@[VM-PUBLIC-IP]
 az group delete --name [resource-group] --yes --no-wait
 ```
 
-## í³‹ What Gets Created
+## ï¿½ï¿½ï¿½ What Gets Created
 
 ### Infrastructure Components
 1. **Resource Group** - Container for all resources
@@ -77,7 +77,7 @@ az group delete --name [resource-group] --yes --no-wait
 - **Managed Identity**: System-assigned for Azure service access
 - **SSH Keys**: Password authentication disabled
 
-## í´§ Key Concepts
+## ï¿½ï¿½ï¿½ Key Concepts
 
 ### VM SKUs Quick Reference
 | SKU Series | Purpose | Example Use Cases |
@@ -98,7 +98,7 @@ az group delete --name [resource-group] --yes --no-wait
 - Access to Key Vault, Storage, SQL Database
 - Eliminates secret rotation requirements
 
-## í´ Validation Steps
+## ï¿½ï¿½ï¿½ Validation Steps
 
 ### 1. Verify VM Status
 ```bash
@@ -120,7 +120,45 @@ az network nsg rule list -g [resource-group] --nsg-name [nsg-name] -o table
 ssh -i ~/.ssh/id_rsa azureuser@[vm-public-ip]
 ```
 
-## íº¨ Troubleshooting
+## ğŸ” Get VM Public IP Address
+```bash
+# Get the public IP of your VM
+az vm list-ip-addresses --resource-group rg-vm-app01 --output table
+
+# Or get just the IP address
+az vm list-ip-addresses --resource-group rg-vm-app01 --query "[0].virtualMachine.network.publicIpAddresses[0].ipAddress" --output tsv
+```
+
+## ğŸ” SSH Connection Commands
+
+### Method 1: Using your PEM key
+```bash
+# Set correct permissions for the key file
+chmod 600 rg-vm-app01_key.pem
+
+# SSH to the VM (replace [PUBLIC-IP] with actual IP)
+ssh -i rg-vm-app01_key.pem azureuser@[PUBLIC-IP]
+```
+
+### Method 2: One-liner with automatic IP lookup
+```bash
+# Get IP and connect in one command
+PUBLIC_IP=$(az vm list-ip-addresses --resource-group rg-vm-app01 --query "[0].virtualMachine.network.publicIpAddresses[0].ipAddress" --output tsv) && ssh -i rg-vm-app01_key.pem azureuser@$PUBLIC_IP
+```
+
+## ğŸš¨ Troubleshooting
+
+### If connection fails:
+```bash
+# Check if VM is running
+az vm get-instance-view --resource-group rg-vm-app01 --name [VM-NAME] --query instanceView.statuses[1] --output table
+
+# Verify NSG rules allow your current IP
+curl ifconfig.me  # Check your current public IP
+az network nsg rule show --resource-group rg-vm-app01 --nsg-name [NSG-NAME] --name Allow-SSH-From-MyIP
+```
+
+**Note**: Make sure your `rg-vm-app01_key.pem` file is in the current directory, or provide the full path to the key file.
 
 ### Common Issues
 - **SSH Connection Refused**: Check NSG rules and your current public IP
@@ -143,7 +181,7 @@ az network nic list-effective-nsg -g [rg] -n [nic-name]
 az monitor metrics list --resource [vm-resource-id] --metric "Percentage CPU"
 ```
 
-## í³š Additional Learning
+## ï¿½ï¿½ï¿½ Additional Learning
 
 ### Related Azure Services
 - **Azure Bastion**: Secure RDP/SSH without public IPs
@@ -159,4 +197,4 @@ az monitor metrics list --resource [vm-resource-id] --metric "Percentage CPU"
 
 ---
 
-**í¾“ AZ-104 Exam Focus**: VM deployment, NSG configuration, managed identities, and SSH authentication are heavily tested topics.
+**ï¿½ï¿½ï¿½ AZ-104 Exam Focus**: VM deployment, NSG configuration, managed identities, and SSH authentication are heavily tested topics.
