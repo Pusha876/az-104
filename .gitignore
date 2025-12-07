@@ -19,6 +19,14 @@ variable
 .azure/
 *.publishsettings
 
+# SSH Keys and PEM files
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+*_key.pem
+*-key.pem
+
 # Logs and temporary files
 *.log
 *.tmp
