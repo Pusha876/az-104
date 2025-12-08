@@ -7,7 +7,7 @@
 source ./variable
 
 echo "=== Azure VM Deployment with Managed Identity & Custom NSG ==="
-echo "Subscription: $SUBSCRIPTION_ID"
+echo "Subscription: $SUB_ID"
 echo "Resource Group: $RG"
 echo "Location: $LOC"
 echo "VM Name: $VM"
@@ -15,7 +15,7 @@ echo ""
 
 # Set the subscription context
 echo "Setting subscription context..."
-az account set --subscription "$SUBSCRIPTION_ID"
+az account set --subscription "$SUB_ID"
 if [ $? -eq 0 ]; then
     echo "✓ Subscription set successfully"
 else
@@ -26,7 +26,7 @@ fi
 # 1) Create resource group
 echo ""
 echo "Creating resource group..."
-az group create --name $RG --location $LOC --subscription $SUBSCRIPTION_ID
+az group create --name $RG --location $LOC --subscription $SUB_ID
 
 if [ $? -eq 0 ]; then
     echo "✓ Resource group '$RG' created successfully"
@@ -127,8 +127,8 @@ fi
 # 9) Create VM using SSH key and no inline NSG (we used subnet NSG)
 echo ""
 echo "Creating virtual machine with SSH key authentication..."
-az vm create -g $RG -n $VM --nics $NIC --image UbuntuLTS --admin-username $ADMIN \
-  --ssh-key-values @$SSH_PUB_KEY_PATH --size Standard_B1s --subscription $SUBSCRIPTION_ID
+az vm create -g $RG -n $VM --nics $NIC --image Ubuntu2204 --admin-username $ADMIN \
+  --ssh-key-values @$SSH_PUB_KEY_PATH --size Standard_B1s --subscription $SUB_ID
 
 if [ $? -eq 0 ]; then
     echo "✓ Virtual machine '$VM' created successfully"
