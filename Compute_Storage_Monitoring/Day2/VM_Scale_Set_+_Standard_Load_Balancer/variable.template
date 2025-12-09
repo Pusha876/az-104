@@ -1,0 +1,15 @@
+SUB_ID="your-subscription-id-here"
+RG="rg-vmss-lb01"
+LOC="eastus"
+VNET="vnet-vmss01"
+SUBNET="snet-vmss"
+NSG="nsg-vmss01"
+PIP="pip-lb01"
+LB="lb-standard01"
+VMSS="vmss-web01"
+ADMIN="azureuser"
+MYIP="your-public-ip-here"            # <-- replace with your public IP (no /32)
+SSH_PUB_KEY_PATH="./vm_key.pem.pub"   # public key for VMSS instances
+SSH_PRIV_KEY_PATH="./vm_key.pem"      # private key for SSH connection
+INSTANCE_COUNT="2"                    # number of VM instances in scale set
+VM_SIZE="Standard_B1s"                # VM size for scale set instances
