@@ -93,6 +93,25 @@ chmod 600 vm-week3day1_key.pem
 ssh -i vm-week3day1_key.pem azureuser@$VM_PUBLIC_IP
 ```
 
+### 6. Verify Storage Account and Blob Container
+
+Check that your storage account and custom scripts are properly uploaded:
+
+```bash
+# List blobs in your storage container
+az storage blob list --account-name monitoralerts --container-name bashscript --auth-mode key -o table
+```
+
+Expected output should show your custom script files:
+```
+Name                    Blob Type    Blob Tier    Length    Content Type    Last Modified
+----------------------  -----------  -----------  --------  --------------  -------------------
+custom_script-demo.txt  BlockBlob                 125       text/plain      2025-12-10T18:31:13+00:00
+custom_script_demo.sh   BlockBlob                 125       text/x-sh       2025-12-10T18:33:47+00:00
+```
+
+**Note**: If you encounter permission errors with `--auth-mode login`, use `--auth-mode key` instead. The Azure CLI will automatically query for the account key.
+
 ## 🔧 Troubleshooting
 
 ### Custom Script Extension Issues
