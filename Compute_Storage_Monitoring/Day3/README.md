@@ -1,5 +1,7 @@
 # Day 3: Monitoring and Alerts Lab
 
+![VM machine (nginx_running)](Monitoring_and_Alerts/assets/VM%20machine%20(nginx_running).png)
+
 This lab demonstrates Azure VM monitoring and alerting capabilities using Azure Monitor and Log Analytics.
 
 ## 📋 Lab Overview
